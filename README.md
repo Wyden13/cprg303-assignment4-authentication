@@ -1,50 +1,100 @@
-# Welcome to your Expo app 👋
+# Assignment 4: Authentication - Expo App 👋
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+This is an [Expo](https://expo.dev) project implementing user authentication with Supabase, featuring sign-up, sign-in, and protected routes.
 
-## Get started
+## 🚀 Quick Start
 
-1. Install dependencies
+### Prerequisites
+
+- Node.js v18+ and npm installed
+- Expo CLI (`npm install -g expo-cli`)
+- iOS Simulator or Android Emulator (or Expo Go app on physical device)
+
+### Setup Instructions
+
+1. **Install dependencies:**
 
    ```bash
    npm install
    ```
 
-2. Start the app
+2. **Configure environment variables:**
+   - Copy your Supabase credentials to `.env.local`:
+
+   ```env
+   EXPO_PUBLIC_SUPABASE_URL=your_supabase_url
+   EXPO_PUBLIC_SUPABASE_KEY=your_supabase_anon_key
+   ```
+
+3. **Start the development server:**
 
    ```bash
    npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+4. **Run the app:**
+   - Press `i` for iOS Simulator
+   - Press `a` for Android Emulator
+   - Press `w` for web
+   - Or scan the QR code with Expo Go app (iPhone Camera or Android Expo Go)
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Supabase Project Setup
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+### Create a Supabase Project
 
-## Get a fresh project
+- Go to [supabase.com](https://supabase.com)
+- Create a new project (note your URL and anon key)
+- Wait for the database to initialize
 
-When you're ready, run:
+### Test Accounts
 
-```bash
-npm run reset-project
+```
+Email:    test@example.com
+Password: Test1234!@
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+**Note:** The email confirmation has been temporarily disabled for SignUp testing purpose.
 
-## Learn more
+## 📋 Features Implemented
 
-To learn more about developing your project with Expo, look at the following resources:
+✅ **Sign-Up Screen**
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+- Email and password input fields
+- Password strength validation (8+ chars, uppercase, lowercase, number, special char)
+- Confirm password matching
+- Password visibility toggle with eye icon
+- Form validation using React Hook Form + Zod
+- Loading state during submission
 
-## Join the community
+✅ **Sign-In Screen**
 
-Join our community of developers creating universal apps.
+- Email and password input
+- Form validation
+- Error handling with user-friendly messages
+- Loading indicators
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+✅ **Protected Routes**
+
+- Session checking on app launch
+- Automatic redirect to login if not authenticated
+- Automatic redirect to main screen if already authenticated
+
+✅ **Session Management**
+
+- AsyncStorage persistence (remember me across app restarts)
+- Automatic token refresh
+- Sign-out functionality with proper cleanup
+
+## 📦 Dependencies
+
+- **expo**: React Native framework
+- **expo-router**: File-based routing
+- **@supabase/supabase-js**: Supabase client
+- **react-hook-form**: Form state management
+- **zod**: Schema validation
+- **@react-native-async-storage/async-storage**: Persistent storage
+- **react-native-url-polyfill**: URL polyfill for React Native
+
+## 📄 License
+
+This is an assignment project for CPRG303C - Mobile App Development

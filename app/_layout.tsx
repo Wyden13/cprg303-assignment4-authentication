@@ -1,24 +1,29 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
+import { router, Stack } from "expo-router";
+import React from "react";
+import { useEffect } from "react";
+import { supabase } from "@/lib/supabase";
+import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
-
-export const unstable_settings = {
-  anchor: '(tabs)',
+const AuthGuard = ({ children }: { children: React.ReactNode }) => {
+  const { session, isLoading } = useAuth();
+  useEffect(() => {
+    if (isLoading) return; // wait until we know if a session exists
+    if (!session) {
+      router.replace("/login");
+    } else {
+      router.replace("/main");
+    }
+  }, [session, isLoading]);
+  if (isLoading) return null;
+  return <>{children}</>;
 };
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <AuthProvider>
+      <AuthGuard>
+        <Stack screenOptions={{ headerShown: false }} />
+      </AuthGuard>
+    </AuthProvider>
   );
 }

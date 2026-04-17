@@ -57,6 +57,9 @@ export default function SignUpScreen() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [error, setError] = useState<string | null>(null);
 
   const {
     control,
@@ -74,25 +77,22 @@ export default function SignUpScreen() {
   });
 
   const onSubmit = async (data: SignUpForm) => {
-    setLoading(true);
     try {
-      const { data: authData, error: signUpError } = await supabase.auth.signUp(
-        {
+      setError(null);
+      setIsSubmitting(true);
+      const { data: signUpData, error: signUpError } =
+        await supabase.auth.signUp({
           email: data.email,
           password: data.password,
-        },
-      );
-
+        });
       if (signUpError) {
         Alert.alert("Sign Up Error", signUpError.message);
         return;
       }
-
-      if (!authData.user) {
+      if (!signUpData.user) {
         Alert.alert("Error", "Failed to create account");
         return;
       }
-
       Alert.alert("Success!", "Account created. Please log in.", [
         {
           text: "OK",
@@ -100,12 +100,11 @@ export default function SignUpScreen() {
         },
       ]);
     } catch (error: any) {
-      Alert.alert(
-        "Error",
+      setError(
         error instanceof Error ? error.message : "Unknown error occurred",
       );
     } finally {
-      setLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -127,6 +126,17 @@ export default function SignUpScreen() {
           <Text style={styles.title}>Register</Text>
           <Text style={styles.subtitle}>Create a new account</Text>
         </View>
+        {/* ── Auth error banner (from Supabase, e.g. "Invalid login credentials") ── */}
+        {error && (
+          <View style={styles.errorBanner}>
+            <Ionicons
+              name="alert-circle-outline"
+              size={16}
+              color={theme.colors.error}
+            />
+            <Text style={styles.errorBannerText}>{error}</Text>
+          </View>
+        )}
         {/* Full Name input */}
         <Text style={styles.label}>
           Full Name {errors.fullName && `- ${errors.fullName.message}`}
@@ -208,7 +218,7 @@ export default function SignUpScreen() {
 
         {/* Confirm Password */}
         <Text style={styles.label}>
-          Confirm Password{" "}
+          Confirm Password
           {errors.confirmPassword && `- ${errors.confirmPassword.message}`}
         </Text>
         <View
@@ -246,14 +256,14 @@ export default function SignUpScreen() {
         </View>
 
         <Pressable
-          style={[styles.button, loading && styles.buttonDisabled]}
+          style={[styles.button, isSubmitting && styles.buttonDisabled]}
           onPress={handleSubmit(onSubmit)}
-          disabled={loading}
+          disabled={isSubmitting}
         >
-          {loading ? (
-            <ActivityIndicator size="small" color="#fff" />
+          {isSubmitting ? (
+            <ActivityIndicator color="#ffffff" />
           ) : (
-            <Text style={styles.buttonText}>Sign Up</Text>
+            <Text style={styles.buttonText}>Sign In</Text>
           )}
         </Pressable>
 
@@ -333,6 +343,7 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.error,
     backgroundColor: "#fff5f5",
   },
+
   passwordContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -380,5 +391,21 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: theme.colors.primary,
     fontWeight: "600",
+  },
+  errorBanner: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    backgroundColor: "#fef2f2",
+    borderWidth: 1,
+    borderColor: "#fecaca",
+    borderRadius: theme.radius.input,
+    padding: 12,
+    marginBottom: 16,
+  },
+  errorBannerText: {
+    flex: 1,
+    fontSize: 14,
+    color: theme.colors.error,
   },
 });

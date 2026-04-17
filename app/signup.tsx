@@ -126,17 +126,7 @@ export default function SignUpScreen() {
           <Text style={styles.title}>Register</Text>
           <Text style={styles.subtitle}>Create a new account</Text>
         </View>
-        {/* ── Auth error banner (from Supabase, e.g. "Invalid login credentials") ── */}
-        {error && (
-          <View style={styles.errorBanner}>
-            <Ionicons
-              name="alert-circle-outline"
-              size={16}
-              color={theme.colors.error}
-            />
-            <Text style={styles.errorBannerText}>{error}</Text>
-          </View>
-        )}
+
         {/* Full Name input */}
         <Text style={styles.label}>
           Full Name {errors.fullName && `- ${errors.fullName.message}`}

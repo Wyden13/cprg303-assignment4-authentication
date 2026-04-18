@@ -1,23 +1,23 @@
+import { Ionicons } from "@expo/vector-icons";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { router } from "expo-router";
+import React, { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import {
-  StyleSheet,
-  Text,
-  View,
-  Alert,
-  TextInput,
-  Pressable,
   ActivityIndicator,
+  Alert,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
 } from "react-native";
-import { theme } from "../styles/theme";
-import React, { useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
-import { router } from "expo-router";
 import { supabase } from "../lib/supabase";
-import { Ionicons } from "@expo/vector-icons";
+import { theme } from "../styles/theme";
 
 export const passwordSchema = z
   .string()
@@ -42,7 +42,19 @@ const SignUpSchema = z
       .string()
       .trim()
       .min(2, "First name must be at least 2 characters."),
-    email: z.string().trim().email("Please enter a valid email address."),
+    email: z
+      .string()
+      .trim()
+      .email("Please enter a valid email address.")
+      .refine((val) => !/^\d/.test(val), {
+        message: "Email cannot start with a number.",
+      })
+      .refine((val) => val.includes("@"), {
+        message: "Email must contain '@'.",
+      })
+      .refine((val) => val.toLowerCase().endsWith(".com"), {
+        message: "Email must end with '.com'.",
+      }),
     password: passwordSchema,
     confirmPassword: z.string(),
   })
@@ -73,7 +85,7 @@ export default function SignUpScreen() {
       password: "",
       confirmPassword: "",
     },
-    mode: "onSubmit",
+    mode: "onChange",
   });
 
   const onSubmit = async (data: SignUpForm) => {

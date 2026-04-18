@@ -1,4 +1,7 @@
 # Assignment 4: Authentication - Expo App 👋
+Author: Sparshan Koirala
+        Hoang Phuong Uyen Nguyen
+        Julia Gesualdi Candotti
 
 This is an [Expo](https://expo.dev) project implementing user authentication with Supabase, featuring sign-up, sign-in, and protected routes.
 
